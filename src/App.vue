@@ -1,4 +1,6 @@
 <template>
+    <link rel="manifest" href="/manifest.json" />
+
   <div id="app">
     <nav>
       <router-link to="/">Home</router-link>

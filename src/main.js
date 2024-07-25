@@ -28,3 +28,16 @@ const userStore = useUserStore();
 await userStore.fetchUser();
 console.log("User fetched successfully:", userStore.user);
 app.mount("#app");
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-worker.js")
+      .then((reg) =>
+        console.log("Service Worker: Registered (Scope: ", reg.scope, ")")
+      )
+      .catch((err) =>
+        console.log("Service Worker: Registration Failed: ", err)
+      );
+  });
+}
