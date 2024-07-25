@@ -24,6 +24,7 @@ export const useUserStore = defineStore("user", {
         throw new Error("Registration failed");
       }
     },
+
     async fetchUser() {
       if (this.token) {
         try {
