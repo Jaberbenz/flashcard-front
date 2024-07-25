@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 // import HomeView from "../views/HomeView.vue";
 import CategoryDetails from "@/pages/CategoryDetails.vue";
+import ThemeDetails from "@/pages/ThemeDetails.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,6 +37,12 @@ const router = createRouter({
       name: "CategoryDetails",
       component: CategoryDetails,
       props: true, // Permet de passer l'ID de la catégorie comme prop
+    },
+    {
+      path: "/themes/:id",
+      name: "ThemeDetails",
+      component: ThemeDetails,
+      props: true,
     },
   ],
 });
