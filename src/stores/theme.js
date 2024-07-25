@@ -45,5 +45,26 @@ export const useThemeStore = defineStore("theme", {
         console.error("Failed to add theme:", error);
       }
     },
+    async addCard(card) {
+      try {
+        const response = await axios.post(`/api/cards`, card);
+        this.themeDetails.cards.push(response.data); // Assuming themeDetails has a cards array
+        console.log("Card added successfully:", response.data);
+      } catch (error) {
+        console.error("Failed to add card:", error);
+      }
+    },
+    async duplicateTheme(themeId) {
+      try {
+        if (typeof themeId === "object" && themeId.id) {
+          themeId = themeId.id; // Extract ID from the object if passed incorrectly
+        }
+        const response = await axios.post(`/api/themes/${themeId}/duplicate`);
+        console.log("Theme duplicated successfully:", response.data);
+        return response.data; // Return the duplicated theme data if needed
+      } catch (error) {
+        console.error(`Failed to duplicate theme with ID ${themeId}:`, error);
+      }
+    },
   },
 });
