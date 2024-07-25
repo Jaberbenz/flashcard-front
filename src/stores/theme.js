@@ -48,7 +48,9 @@ export const useThemeStore = defineStore("theme", {
     async addCard(card) {
       try {
         const response = await axios.post(`/api/cards`, card);
-        this.themeDetails.cards.push(response.data); // Assuming themeDetails has a cards array
+        if (this.themeDetails.cards) {
+          this.themeDetails.cards.push(response.data); // Ajouter la nouvelle carte au tableau des cartes
+        }
         console.log("Card added successfully:", response.data);
       } catch (error) {
         console.error("Failed to add card:", error);
@@ -64,6 +66,20 @@ export const useThemeStore = defineStore("theme", {
         return response.data; // Return the duplicated theme data if needed
       } catch (error) {
         console.error(`Failed to duplicate theme with ID ${themeId}:`, error);
+      }
+    },
+    async deleteCard(cardId) {
+      try {
+        await axios.delete(`/api/cards/${cardId}`);
+        // Mettre à jour localement le state après suppression
+        if (this.themeDetails && this.themeDetails.cards) {
+          this.themeDetails.cards = this.themeDetails.cards.filter(
+            (card) => card.id !== cardId
+          );
+        }
+        console.log(`Card with ID ${cardId} deleted successfully.`);
+      } catch (error) {
+        console.error(`Failed to delete card with ID ${cardId}:`, error);
       }
     },
   },

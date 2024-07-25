@@ -23,7 +23,12 @@
 
         <h3>Cartes</h3>
         <ul>
-          <Card v-for="card in theme.cards" :key="card.id" :card="card" />
+          <Card
+            v-for="card in theme.cards"
+            :key="card.id"
+            :card="card"
+            @deleteCard="deleteCard"
+          />
         </ul>
 
         <button v-if="canEdit" @click="startEdit">Modifier ce thème</button>
@@ -33,6 +38,7 @@
         <button v-if="!canEdit" @click="duplicateTheme">
           Dupliquer ce thème
         </button>
+        <button v-if="canEdit" @click="deleteTheme">Supprimer ce thème</button>
       </div>
     </div>
     <div v-else>
@@ -81,6 +87,23 @@ export default {
       return theme.value && theme.value.user_id === userStore.user?.id;
     });
 
+    const deleteCard = async (cardId) => {
+      if (canEdit.value) {
+        // Check if the user can edit (is the owner of the theme)
+        try {
+          await themeStore.deleteCard(cardId);
+          theme.value.cards = theme.value.cards.filter(
+            (card) => card.id !== cardId
+          );
+        } catch (error) {
+          console.error("Failed to delete card:", error);
+        }
+      } else {
+        console.error("You are not authorized to delete this card.");
+        alert("You are not authorized to delete this card.");
+      }
+    };
+
     const isCreator = computed(() => {
       return theme.value && theme.value.user_id === userStore.user?.id;
     });
@@ -117,15 +140,18 @@ export default {
     };
 
     const addCard = async () => {
-      if (theme.value && canEdit.value) {
-        try {
-          await themeStore.addCard(theme.value.id, newCard.value);
-          addingCard.value = false;
-          newCard.value = { front: "", back: "" };
-          await themeStore.fetchThemeDetails(theme.value.id);
-        } catch (error) {
-          console.error("Failed to add card:", error);
-        }
+      try {
+        const cardData = {
+          front: newCard.value.front,
+          back: newCard.value.back,
+          theme_id: themeStore.themeDetails.id, // Assurez-vous que theme_id est correct
+        };
+        console.log("Sending card data:", cardData);
+        await themeStore.addCard(cardData);
+        addingCard.value = false;
+        newCard.value = { front: "", back: "" };
+      } catch (error) {
+        console.error("Failed to add card:", error);
       }
     };
 
@@ -136,6 +162,18 @@ export default {
         router.push("/"); // Redirect to the home or user dashboard
       } catch (error) {
         console.error("Failed to duplicate theme:", error);
+      }
+    };
+
+    const deleteTheme = async () => {
+      if (confirm("Êtes-vous sûr de vouloir supprimer ce thème?")) {
+        try {
+          await themeStore.deleteTheme(theme.value.id);
+          alert("Thème supprimé avec succès !");
+          router.push("/"); // Redirect to the home or user dashboard
+        } catch (error) {
+          console.error("Failed to delete theme:", error);
+        }
       }
     };
 
@@ -153,6 +191,8 @@ export default {
       cancelAddCard,
       addCard,
       duplicateTheme,
+      deleteTheme,
+      deleteCard,
     };
   },
 };

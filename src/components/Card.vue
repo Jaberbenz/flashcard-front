@@ -20,15 +20,13 @@
             />
           </svg>
         </button>
-        <h2 class="title">{{ card.flipped ? card.back : card.front_text }}</h2>
+        <h2 class="title">{{ card.flipped ? card.back : card.front }}</h2>
       </article>
     </transition>
   </li>
 </template>
 
 <script>
-import { ref } from "vue";
-
 export default {
   name: "Card",
   props: {
@@ -43,7 +41,7 @@ export default {
     };
 
     const deleteCard = (id) => {
-      emit("deleteTrigger", id);
+      emit("deleteCard", id);
     };
 
     return {
