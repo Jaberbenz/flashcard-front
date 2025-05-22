@@ -38,7 +38,7 @@ MemoCard est une application web de gestion de flashcards permettant de créer, 
 1. **Cloner le dépôt**
 
    ```bash
-   git clone <repo-url>
+   git clone (https://github.com/Jaberbenz/flashcard-front.git)
    cd flashcard-front
    ```
 
